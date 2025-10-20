@@ -1,0 +1,149 @@
+package HotelPaymentReport;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+public class SimpleHotelUI extends JFrame {
+
+    JTabbedPane mainTabs, payTabs, reportTabs;
+    JTextField tName, tAmount, tSearch;
+    JTable payTable;
+
+    public SimpleHotelUI() {
+        setTitle("Hotel Management System");
+        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        mainTabs = new JTabbedPane();
+
+        // Payments Panel
+        JPanel paymentsPanel = new JPanel(new BorderLayout());
+        payTabs = new JTabbedPane();
+
+        // Bill Generation tab
+        JPanel billPanel = new JPanel(null);
+
+        JLabel lblCustInfo = new JLabel("CUSTOMER INFORMATION");
+        lblCustInfo.setBounds(30, 10, 250, 25);
+        billPanel.add(lblCustInfo);
+
+        JLabel l1 = new JLabel("Customer Name :");
+        l1.setBounds(50, 50, 150, 25);
+        billPanel.add(l1);
+        tName = new JTextField();
+        tName.setBounds(180, 50, 200, 25);
+        billPanel.add(tName);
+
+        JLabel l2 = new JLabel("Amount :");
+        l2.setBounds(50, 90, 150, 25);
+        billPanel.add(l2);
+        tAmount = new JTextField();
+        tAmount.setBounds(180, 90, 200, 25);
+        billPanel.add(tAmount);
+
+        // Payment Mode
+        JLabel l3 = new JLabel("MODE OF PAYMENT");
+        l3.setBounds(30, 140, 180, 25);
+        billPanel.add(l3);
+
+        JRadioButton rbCash = new JRadioButton("CASH");
+        JRadioButton rbCard = new JRadioButton("CARD");
+        JRadioButton rbUpi = new JRadioButton("UPI/ONLINE");
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(rbCash);
+        bg.add(rbCard);
+        bg.add(rbUpi);
+        rbCash.setBounds(50, 170, 100, 25);
+        rbCard.setBounds(160, 170, 100, 25);
+        rbUpi.setBounds(270, 170, 120, 25);
+        billPanel.add(rbCash);
+        billPanel.add(rbCard);
+        billPanel.add(rbUpi);
+
+        JLabel lCard = new JLabel("CARD NUMBER :");
+        lCard.setBounds(50, 210, 130, 25);
+        billPanel.add(lCard);
+        JTextField tfCard = new JTextField("000 000 00XXX");
+        tfCard.setBounds(180, 210, 200, 25);
+        billPanel.add(tfCard);
+
+        JLabel lUpi = new JLabel("UPI NUMBER :");
+        lUpi.setBounds(50, 250, 130, 25);
+        billPanel.add(lUpi);
+        JTextField tfUpi = new JTextField("xyz@okbank");
+        tfUpi.setBounds(180, 250, 200, 25);
+        billPanel.add(tfUpi);
+
+        JButton payBtn = new JButton("PAY");
+        payBtn.setBounds(150, 310, 100, 30);
+        billPanel.add(payBtn);
+
+        payBtn.addActionListener((ActionEvent e) -> {
+            String name = tName.getText();
+            String amt = tAmount.getText();
+            if (!name.isEmpty() && !amt.isEmpty()) {
+                DefaultTableModel model = (DefaultTableModel) payTable.getModel();
+                model.addRow(new Object[]{model.getRowCount() + 100, name, amt, "*"});
+                JOptionPane.showMessageDialog(this, "Payment Recorded");
+                tName.setText("");
+                tAmount.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Fill all fields!");
+            }
+        });
+
+        payTabs.add("BILL GENERATION", billPanel);
+
+        // Payment History
+        JPanel historyPanel = new JPanel(new BorderLayout());
+        String[] cols = {"PAYMENT NO", "CUSTOMER NAME", "AMOUNT", "DATE"};
+        payTable = new JTable(new DefaultTableModel(cols, 0));
+        JScrollPane sp = new JScrollPane(payTable);
+        historyPanel.add(sp, BorderLayout.CENTER);
+
+        JPanel searchPanel = new JPanel();
+        searchPanel.add(new JLabel("SEARCH HERE: "));
+        tSearch = new JTextField(15);
+        searchPanel.add(tSearch);
+        JButton searchBtn = new JButton("Search");
+        searchPanel.add(searchBtn);
+        historyPanel.add(searchPanel, BorderLayout.NORTH);
+
+        payTabs.add("PAYMENT HISTORY", historyPanel);
+        paymentsPanel.add(payTabs, BorderLayout.CENTER);
+
+        // Reports Panel
+        JPanel reportsPanel = new JPanel(new BorderLayout());
+        reportTabs = new JTabbedPane();
+
+        // Weekly tab
+        JPanel weekly = new JPanel();
+        weekly.setLayout(new BoxLayout(weekly, BoxLayout.Y_AXIS));
+        weekly.add(new JLabel("WEEKLY REPORT"));
+        weekly.add(new JLabel("CUSTOMER - 62.5%"));
+        weekly.add(new JLabel("ELECTRICITY - 25%"));
+        weekly.add(new JLabel("OTHER EXPENSE - 12.5%"));
+        reportTabs.add("WEEKLY", weekly);
+
+        // Monthly tab
+        JPanel monthly = new JPanel();
+        monthly.setLayout(new BoxLayout(monthly, BoxLayout.Y_AXIS));
+        monthly.add(new JLabel("MONTHLY REPORT"));
+        monthly.add(new JLabel("CUSTOMER, ELECTRICITY, WATER BILL"));
+        monthly.add(new JLabel("SALARY, MAINTENANCE, SECURITY"));
+        reportTabs.add("MONTHLY", monthly);
+
+        reportsPanel.add(reportTabs, BorderLayout.CENTER);
+
+        mainTabs.add("PAYMENTS", paymentsPanel);
+        mainTabs.add("REPORTS", reportsPanel);
+
+        add(mainTabs);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new SimpleHotelUI().setVisible(true));
+    }
+}
